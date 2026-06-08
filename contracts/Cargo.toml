@@ -1,0 +1,23 @@
+[workspace]
+members = [
+    "shared",
+    "pool-factory",
+    "constant-product-pool",
+    "stableswap-pool",
+    "concentrated-liquidity-pool",
+    "router",
+    "lp-token",
+    "farm",
+    "governance",
+    "treasury",
+    "twap-oracle",
+]
+
+[workspace.dependencies]
+soroban-sdk = "20.0.0"
+soroban-fixed-point-math = { git = "https://github.com/soropool/soroban-fixed-point-math" }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
