@@ -1,0 +1,21 @@
+name: Contract Security Scan
+
+on:
+  push:
+    paths: ['contracts/**']
+  pull_request:
+    paths: ['contracts/**']
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with: { toolchain: stable }
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+      - name: Audit dependencies
+        run: cd contracts && cargo audit
+      - name: Check unused dependencies
+        run: cd contracts && cargo +nightly udeps

@@ -1,0 +1,31 @@
+name: CD — Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "deploy" to confirm production deployment'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'deploy'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build & push production images
+        run: |
+          docker build -t ghcr.io/soropool/backend:latest -t ghcr.io/soropool/backend:${{ github.sha }} ./backend
+          docker build -t ghcr.io/soropool/frontend:latest -t ghcr.io/soropool/frontend:${{ github.sha }} ./frontend
+          docker push --all-tags ghcr.io/soropool/backend
+          docker push --all-tags ghcr.io/soropool/frontend
+      - name: Deploy to production
+        run: |
+          kubectl set image deployment/soropool-backend -n soropool-prod \
+            backend=ghcr.io/soropool/backend:${{ github.sha }}
+          kubectl set image deployment/soropool-frontend -n soropool-prod \
+            frontend=ghcr.io/soropool/frontend:${{ github.sha }}
+      - name: Verify rollout
+        run: |
+          kubectl rollout status deployment/soropool-backend -n soropool-prod
+          kubectl rollout status deployment/soropool-frontend -n soropool-prod

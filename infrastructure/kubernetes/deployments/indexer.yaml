@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soropool-indexer
+  namespace: soropool-prod
+  labels:
+    app: soropool-indexer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: soropool-indexer
+  template:
+    metadata:
+      labels:
+        app: soropool-indexer
+    spec:
+      containers:
+        - name: indexer
+          image: ghcr.io/soropool/backend:latest
+          command: ["node", "dist/modules/indexer/indexer-worker.js"]
+          env:
+            - name: NODE_ENV
+              value: "production"
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"

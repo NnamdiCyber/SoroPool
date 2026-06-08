@@ -1,0 +1,27 @@
+name: CD — Staging
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build & push Docker images
+        run: |
+          docker build -t ghcr.io/soropool/backend:${{ github.sha }} ./backend
+          docker build -t ghcr.io/soropool/frontend:${{ github.sha }} ./frontend
+          docker push ghcr.io/soropool/backend:${{ github.sha }}
+          docker push ghcr.io/soropool/frontend:${{ github.sha }}
+      - name: Deploy to staging
+        run: |
+          kubectl set image deployment/soropool-backend -n soropool-staging \
+            backend=ghcr.io/soropool/backend:${{ github.sha }}
+          kubectl set image deployment/soropool-frontend -n soropool-staging \
+            frontend=ghcr.io/soropool/frontend:${{ github.sha }}
+      - name: Smoke test
+        run: |
+          sleep 10
+          curl -f http://staging.soropool.finance/api/v1/pools || exit 1
