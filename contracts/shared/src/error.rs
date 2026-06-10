@@ -1,7 +1,7 @@
 use soroban_sdk::contracterror;
 
 #[contracterror]
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Error {
     InsufficientLiquidity = 1,
     InvalidFee = 2,
@@ -13,4 +13,6 @@ pub enum Error {
     Unauthorized = 8,
     InvalidInput = 9,
     InsufficientOutput = 10,
+    PoolAlreadyExists = 11,
+    AlreadyInitialized = 12,
 }

@@ -15,19 +15,26 @@ pub fn emit_pool_created(
     token_a: &Address,
     token_b: &Address,
     fee_tier: FeeTier,
+    deployer: &Address,
 ) {
+    let timestamp = env.ledger().timestamp();
     env.events().publish(
+        (Symbol::new(env, "pool_created"),),
         (
-            Symbol::new(env, "pool_created"),
-            Symbol::new(env, &format!("{:?}", pool_type)),
+            pool,
+            pool_type,
+            token_a,
+            token_b,
+            fee_tier,
+            deployer,
+            timestamp,
         ),
-        (pool, token_a, token_b, fee_tier),
     );
 }
 
-pub fn emit_fee_recipient_updated(env: &Env, new_recipient: &Address) {
+pub fn emit_fee_recipient_updated(env: &Env, previous: &Address, new_recipient: &Address) {
     env.events().publish(
         (Symbol::new(env, "fee_recipient_updated"),),
-        (new_recipient,),
+        (previous, new_recipient),
     );
 }
