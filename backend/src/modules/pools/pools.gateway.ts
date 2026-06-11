@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway(parseInt(process.env.WS_PORT, 10) || 3001, {
+@WebSocketGateway(parseInt(process.env.WS_PORT || '3001', 10), {
   cors: { origin: '*' },
   namespace: '/pools',
 })
