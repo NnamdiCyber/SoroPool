@@ -1,5 +1,3 @@
-use soroban_sdk::Env;
-
 pub const MINIMUM_LIQUIDITY: i128 = 1000;
 const FEE_DENOMINATOR: i128 = 10_000;
 

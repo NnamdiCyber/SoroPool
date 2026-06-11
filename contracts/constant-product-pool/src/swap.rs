@@ -1,4 +1,4 @@
-use soroban_sdk::{token, vec, Address, Env, IntoVal, Symbol, Val, Vec};
+use soroban_sdk::{token, Address, Env, IntoVal, Symbol, Val, Vec};
 
 use crate::events;
 use crate::fees;
