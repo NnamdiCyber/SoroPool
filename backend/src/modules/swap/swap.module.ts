@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { SwapService } from './swap.service';
 import { SwapController } from './swap.controller';
 import { SwapGateway } from './swap.gateway';
-import { PoolsModule } from '../pools/pools.module';
+import { Swap } from '../../database/entities/swap.entity';
+import { Pool } from '../../database/entities/pool.entity';
 
 @Module({
-  imports: [PoolsModule],
+  imports: [TypeOrmModule.forFeature([Swap, Pool])],
   controllers: [SwapController],
   providers: [SwapService, SwapGateway],
   exports: [SwapService],

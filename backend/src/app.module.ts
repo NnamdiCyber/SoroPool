@@ -5,6 +5,9 @@ import configuration from './config/configuration';
 import databaseConfig from './config/database.config';
 import stellarConfig from './config/stellar.config';
 import { DatabaseModule } from './database/database.module';
+import { TimescaleModule } from './database/timescale.module';
+import { RedisModule } from './shared/redis/redis.module';
+import { TokenModule } from './modules/tokens/token.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PoolsModule } from './modules/pools/pools.module';
 import { SwapModule } from './modules/swap/swap.module';
@@ -26,6 +29,9 @@ import { AdminModule } from './modules/admin/admin.module';
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
     DatabaseModule,
+    TimescaleModule,
+    RedisModule,
+    TokenModule,
     AuthModule,
     PoolsModule,
     SwapModule,
