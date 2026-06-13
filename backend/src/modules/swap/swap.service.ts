@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { Swap } from '../../database/entities/swap.entity';
 import { Pool } from '../../database/entities/pool.entity';
+import { getAmountOut, getSpotPrice } from '../../shared/amm-math/constant-product.math';
 
 @Injectable()
 export class SwapService {
@@ -20,32 +21,49 @@ export class SwapService {
     poolId?: string,
   ) {
     const pool = poolId
-      ? await this.poolRepository.findOne({ where: { id: poolId } })
-      : await this.poolRepository.findOne({ where: { isActive: true } });
+      ? await this.poolRepository.findOne({ where: { id: poolId }, relations: ['token0', 'token1'] })
+      : await this.poolRepository.findOne({ where: { isActive: true }, relations: ['token0', 'token1'] });
     if (!pool) throw new NotFoundException('No active pool found');
 
-    const reserveIn = pool.reserve0;
-    const reserveOut = pool.reserve1;
-    const feeBps = pool.feeBps;
+    const tokenInIsToken0 = pool.token0?.symbol === tokenIn || pool.token0Id === tokenIn;
+    const reserveIn = tokenInIsToken0 ? pool.reserve0 : pool.reserve1;
+    const reserveOut = tokenInIsToken0 ? pool.reserve1 : pool.reserve0;
+
+    const { amountOut, priceImpact } = getAmountOut(amountIn, reserveIn, reserveOut, pool.feeBps);
+
     const amountInNum = BigInt(amountIn);
-    const reserveInNum = BigInt(reserveIn);
-    const reserveOutNum = BigInt(reserveOut);
+    const amountOutNum = BigInt(amountOut);
+    const fee = amountInNum * BigInt(pool.feeBps) / 10000n;
 
-    const fee = amountInNum * BigInt(feeBps) / BigInt(10000);
-    const amountInAfterFee = amountInNum - fee;
-    const amountOutNum = (amountInAfterFee * reserveOutNum) / (reserveInNum + amountInAfterFee);
+    const effectivePrice = amountOutNum > 0n && amountInNum > 0n
+      ? Number(amountOutNum) / Number(amountInNum)
+      : 0;
 
-    const numerator = BigInt(amountIn) * BigInt(10000);
-    const denominator = BigInt(amountIn) + BigInt(2) * reserveInNum;
-    const priceImpact = denominator > 0 ? Number((numerator * BigInt(10000)) / denominator) / 10000 : 0;
+    const severity = priceImpact < 0.01 ? 'low' : priceImpact < 0.05 ? 'medium' : priceImpact < 0.15 ? 'high' : 'critical';
 
     return {
+      tokenIn,
+      tokenOut,
       amountIn: amountInNum.toString(),
-      amountOut: amountOutNum.toString(),
+      amountOut: amountOut.toString(),
       priceImpact,
-      route: { pools: [{ poolId: pool.id, poolType: pool.poolType }], path: [tokenIn, tokenOut], totalPriceImpact: priceImpact },
-      effectivePrice: amountOutNum > 0 && amountInNum > 0 ? Number(amountOutNum) / Number(amountInNum) : 0,
+      route: {
+        pools: [{
+          poolId: pool.id,
+          poolType: pool.poolType,
+          tokenIn,
+          tokenOut,
+          amountIn: amountInNum.toString(),
+          amountOut: amountOut.toString(),
+          priceImpact,
+          fee: pool.feeBps,
+        }],
+        path: [tokenIn, tokenOut],
+        totalPriceImpact: priceImpact,
+      },
+      effectivePrice,
       fee: fee.toString(),
+      priceImpactSeverity: severity,
     };
   }
 
@@ -55,14 +73,22 @@ export class SwapService {
     slippage: number,
     deadline: number,
   ) {
-    return { txXdr: 'AAAAAgAAAABkZXNj...', quote, userAddress, slippage, deadline };
+    const amountOut = BigInt(quote?.amountOut || '0');
+    const minAmountOut = amountOut - (amountOut * BigInt(Math.round(slippage * 10000))) / 10000n;
+
+    return {
+      txXdr: 'AAAAAgAAAABkZXNj...',
+      quote,
+      userAddress,
+      slippage,
+      deadline,
+      minAmountOut: minAmountOut.toString(),
+    };
   }
 
   async calculatePriceImpact(amountIn: string, reserveIn: string, reserveOut: string) {
-    const a = BigInt(amountIn);
-    const rIn = BigInt(reserveIn);
-    const result = a * BigInt(10000) / (a + BigInt(2) * rIn);
-    return { priceImpact: Number(result) / 10000 };
+    const result = getAmountOut(amountIn, reserveIn, reserveOut, 0);
+    return { priceImpact: result.priceImpact };
   }
 
   async recordSwap(data: {
@@ -111,5 +137,11 @@ export class SwapService {
       .andWhere('swap.time >= :since', { since: oneDayAgo })
       .getRawOne();
     return result?.volume || '0';
+  }
+
+  async getSpotPrice(poolId: string): Promise<number> {
+    const pool = await this.poolRepository.findOne({ where: { id: poolId } });
+    if (!pool) throw new NotFoundException('Pool not found');
+    return getSpotPrice(pool.reserve0, pool.reserve1);
   }
 }

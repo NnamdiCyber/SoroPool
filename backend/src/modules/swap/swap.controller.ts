@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { SwapService } from './swap.service';
+import { BuildSwapDto } from './dto/build-swap.dto';
 
 @ApiTags('swap')
 @Controller('swap')
@@ -13,18 +14,19 @@ export class SwapController {
     @Query('tokenIn') tokenIn: string,
     @Query('tokenOut') tokenOut: string,
     @Query('amountIn') amountIn: string,
+    @Query('poolId') poolId?: string,
   ) {
-    return this.swapService.getQuote(tokenIn, tokenOut, amountIn);
+    return this.swapService.getQuote(tokenIn, tokenOut, amountIn, poolId);
   }
 
   @Post('build')
   @ApiOperation({ summary: 'Build swap transaction' })
-  buildSwap(@Body() body: any) {
+  buildSwap(@Body() buildSwapDto: BuildSwapDto) {
     return this.swapService.buildSwapTransaction(
-      body.quote,
-      body.userAddress,
-      body.slippage,
-      body.deadline,
+      buildSwapDto.quote,
+      buildSwapDto.userAddress,
+      buildSwapDto.slippage,
+      buildSwapDto.deadline,
     );
   }
 
@@ -36,5 +38,11 @@ export class SwapController {
     @Query('reserveOut') reserveOut: string,
   ) {
     return this.swapService.calculatePriceImpact(amountIn, reserveIn, reserveOut);
+  }
+
+  @Get('spot-price')
+  @ApiOperation({ summary: 'Get spot price for a pool' })
+  getSpotPrice(@Query('poolId') poolId: string) {
+    return this.swapService.getSpotPrice(poolId);
   }
 }
