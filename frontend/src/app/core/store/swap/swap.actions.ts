@@ -8,7 +8,7 @@ export const SwapActions = createActionGroup({
     'Set Amount In': props<{ amount: string }>(),
     'Set Slippage': props<{ slippage: number }>(),
     'Set Deadline': props<{ deadline: number }>(),
-    'Get Quote': emptyProps(),
+    'Get Quote': props<{ tokenIn: string; tokenOut: string; amountIn: string }>(),
     'Update Quote': props<{ quote: any }>(),
     'Reset Swap': emptyProps(),
   },

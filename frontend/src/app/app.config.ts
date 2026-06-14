@@ -7,13 +7,31 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
+import { authReducer } from './core/store/auth/auth.reducer';
+import { poolsReducer } from './core/store/pools/pools.reducer';
+import { swapReducer } from './core/store/swap/swap.reducer';
+import { liquidityReducer } from './core/store/liquidity/liquidity.reducer';
+import { farmReducer } from './core/store/farm/farm.reducer';
+import { pricesReducer } from './core/store/prices/prices.reducer';
+import { analyticsReducer } from './core/store/analytics/analytics.reducer';
+import { AuthEffects } from './core/store/auth/auth.effects';
+import { PoolsEffects } from './core/store/pools/pools.effects';
+import { SwapEffects } from './core/store/swap/swap.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding()),
     provideAnimations(),
-    provideStore(),
-    provideEffects(),
+    provideStore({
+      auth: authReducer,
+      pools: poolsReducer,
+      swap: swapReducer,
+      liquidity: liquidityReducer,
+      farm: farmReducer,
+      prices: pricesReducer,
+      analytics: analyticsReducer,
+    }),
+    provideEffects([AuthEffects, PoolsEffects, SwapEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: environment.production }),
     ...(environment.production ? [provideServiceWorker('ngsw-worker.js')] : []),
   ],
