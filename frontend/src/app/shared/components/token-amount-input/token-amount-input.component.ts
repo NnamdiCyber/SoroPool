@@ -9,7 +9,9 @@ import { FormsModule } from '@angular/forms';
     <div class="bg-surface-800 rounded-xl p-4 border border-surface-700">
       <div class="flex justify-between mb-2">
         <span class="text-xs text-surface-400">{{ label() }}</span>
-        <span class="text-xs text-surface-400" *ngIf="balance">Balance: {{ balance }}</span>
+        @if (balance()) {
+          <span class="text-xs text-surface-400">Balance: {{ balance() }}</span>
+        }
       </div>
       <div class="flex items-center gap-3">
         <input
@@ -20,12 +22,16 @@ import { FormsModule } from '@angular/forms';
           placeholder="0.0"
           class="flex-1 bg-transparent text-2xl font-semibold outline-none text-white placeholder-surface-500"
         />
-        <button (click)="amountChange.emit(balance)" class="text-xs text-primary font-medium uppercase">Max</button>
+        @if (balance()) {
+          <button (click)="amountChange.emit(balance())" class="text-xs text-primary font-medium uppercase">Max</button>
+        }
         <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-700 hover:bg-surface-600 transition-colors">
           <span class="text-sm font-medium">{{ tokenSymbol() || 'Select' }}</span>
         </button>
       </div>
-      <div class="mt-1 text-xs text-surface-500" *ngIf="usdValue">~${{ usdValue }}</div>
+      @if (usdValue()) {
+        <div class="mt-1 text-xs text-surface-500">~$<span>{{ usdValue() }}</span></div>
+      }
     </div>
   `,
 })

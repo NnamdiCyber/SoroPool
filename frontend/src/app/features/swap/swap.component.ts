@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FormsModule } from '@angular/forms';
 import { TokenAmountInputComponent } from '../../shared/components/token-amount-input/token-amount-input.component';
@@ -19,6 +19,7 @@ import { selectSwapQuote, selectMinAmountOut, selectPriceImpactSeverity, selectS
         <div class="space-y-2">
           <sp-token-amount-input
             label="You Pay"
+            tokenSymbol="XLM"
             [amount]="amountIn()"
             (amountChange)="onAmountInChange($event)"
           />
@@ -27,6 +28,7 @@ import { selectSwapQuote, selectMinAmountOut, selectPriceImpactSeverity, selectS
           </div>
           <sp-token-amount-input
             label="You Receive"
+            tokenSymbol="USDC"
             [amount]="quote()?.amountOut || ''"
           />
         </div>
@@ -47,6 +49,10 @@ import { selectSwapQuote, selectMinAmountOut, selectPriceImpactSeverity, selectS
             <span class="text-surface-400">Slippage</span>
             <span class="font-medium">{{ slippage() * 100 }}%</span>
           </div>
+          <div class="flex justify-between">
+            <span class="text-surface-400">Route</span>
+            <span class="font-medium">{{ quote()?.route?.pools?.length || 0 }} hop(s)</span>
+          </div>
         </div>
 
         <button
@@ -65,6 +71,9 @@ export class SwapComponent {
   walletService = inject(WalletService);
 
   amountIn = signal('');
+  tokenIn = signal('XLM');
+  tokenOut = signal('USDC');
+
   quote = this.store.selectSignal(selectSwapQuote);
   minAmountOut = this.store.selectSignal(selectMinAmountOut);
   priceImpactSeverity = this.store.selectSignal(selectPriceImpactSeverity);
@@ -73,8 +82,12 @@ export class SwapComponent {
   onAmountInChange(amount: string) {
     this.amountIn.set(amount);
     this.store.dispatch(SwapActions.setAmountIn({ amount }));
-    if (amount) {
-      this.store.dispatch(SwapActions.getQuote());
+    if (amount && this.tokenIn() && this.tokenOut()) {
+      this.store.dispatch(SwapActions.getQuote({
+        tokenIn: this.tokenIn(),
+        tokenOut: this.tokenOut(),
+        amountIn: amount,
+      }));
     }
   }
 
