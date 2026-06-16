@@ -25,8 +25,11 @@ import { FormsModule } from '@angular/forms';
         @if (balance()) {
           <button (click)="amountChange.emit(balance())" class="text-xs text-primary font-medium uppercase">Max</button>
         }
-        <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-700 hover:bg-surface-600 transition-colors">
+        <button (click)="tokenClick.emit()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-700 hover:bg-surface-600 transition-colors">
           <span class="text-sm font-medium">{{ tokenSymbol() || 'Select' }}</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
         </button>
       </div>
       @if (usdValue()) {
@@ -42,4 +45,5 @@ export class TokenAmountInputComponent {
   balance = input<string>('');
   usdValue = input<string>('');
   amountChange = output<string>();
+  tokenClick = output<void>();
 }
