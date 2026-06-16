@@ -1,10 +1,10 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: backend-pdb
+  name: frontend-pdb
   namespace: soropool-prod
 spec:
-  minAvailable: 2
+  minAvailable: 1
   selector:
     matchLabels:
-      app: backend
+      app: soropool-frontend

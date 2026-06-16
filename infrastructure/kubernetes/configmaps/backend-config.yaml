@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: soropool-prod
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  WS_PORT: "3001"
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+  DB_NAME: "soropool"
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  RABBITMQ_HOST: "rabbitmq"
+  RABBITMQ_PORT: "5672"
+  STELLAR_NETWORK: "testnet"
+  STELLAR_HORIZON_URL: "https://horizon-testnet.stellar.org"
+  SOROBAN_RPC_URL: "https://soroban-testnet.stellar.org"
+  CORS_ORIGIN: "https://staging.soropool.finance"
+  LOG_LEVEL: "info"
+  RATE_LIMIT_WINDOW_MS: "60000"
+  RATE_LIMIT_MAX: "100"

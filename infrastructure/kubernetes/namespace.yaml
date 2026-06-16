@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: soropool-prod
+  labels:
+    name: soropool-prod
+    environment: production
