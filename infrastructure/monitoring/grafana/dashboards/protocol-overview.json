@@ -1,0 +1,106 @@
+{
+  "title": "SoroPool Protocol Overview",
+  "uid": "soropool-protocol-overview",
+  "schemaVersion": 36,
+  "version": 1,
+  "panels": [
+    {
+      "title": "Protocol TVL",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(tvl_usd{pool=~\".+\"})",
+          "legendFormat": "TVL"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "USD",
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green" }] }
+        }
+      }
+    },
+    {
+      "title": "24h Volume",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(volume_24h_usd{pool=~\".+\"})",
+          "legendFormat": "Volume 24h"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "USD"
+        }
+      }
+    },
+    {
+      "title": "24h Fee Revenue",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(fee_revenue_24h_usd{pool=~\".+\"})",
+          "legendFormat": "Fees 24h"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "USD"
+        }
+      }
+    },
+    {
+      "title": "TVL Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "targets": [
+        {
+          "expr": "sum(tvl_usd{pool=~\".+\"})",
+          "legendFormat": "Total TVL"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "USD"
+        }
+      }
+    },
+    {
+      "title": "Daily Volume",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "targets": [
+        {
+          "expr": "sum(rate(swap_volume_usd_total[1d]))",
+          "legendFormat": "Volume"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "USD"
+        }
+      }
+    },
+    {
+      "title": "Pool TVL Breakdown",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "targets": [
+        {
+          "expr": "tvl_usd{pool=~\".+\"}",
+          "legendFormat": "{{pool}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "USD"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "title": "Liquidity Depth",
+  "uid": "soropool-liquidity-depth",
+  "schemaVersion": 36,
+  "version": 1,
+  "panels": [
+    {
+      "title": "Pool Reserves",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "pool_reserve_0{pool=~\".+\"}",
+          "legendFormat": "{{pool}} Reserve 0"
+        },
+        {
+          "expr": "pool_reserve_1{pool=~\".+\"}",
+          "legendFormat": "{{pool}} Reserve 1"
+        }
+      ]
+    },
+    {
+      "title": "Liquidity Providers per Pool",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "pool_lp_count{pool=~\".+\"}",
+          "legendFormat": "{{pool}}"
+        }
+      ]
+    },
+    {
+      "title": "Pool Fee Revenue",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "expr": "rate(pool_fee_revenue_total[5m])",
+          "legendFormat": "{{pool}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "USD"
+        }
+      }
+    }
+  ]
+}

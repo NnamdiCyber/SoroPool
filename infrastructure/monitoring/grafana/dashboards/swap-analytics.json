@@ -1,0 +1,62 @@
+{
+  "title": "Swap Analytics",
+  "uid": "soropool-swap-analytics",
+  "schemaVersion": 36,
+  "version": 1,
+  "panels": [
+    {
+      "title": "Swap Volume (24h)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(rate(swap_volume_usd_total[5m])) * 3600 * 24",
+          "legendFormat": "Volume"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "USD"
+        }
+      }
+    },
+    {
+      "title": "Swap Count",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "sum(rate(swap_count_total[5m]))",
+          "legendFormat": "Swaps/s"
+        }
+      ]
+    },
+    {
+      "title": "Average Swap Size",
+      "type": "gauge",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "expr": "sum(rate(swap_volume_usd_total[1h])) / sum(rate(swap_count_total[1h]))",
+          "legendFormat": "Avg Size"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "USD"
+        }
+      }
+    },
+    {
+      "title": "Price Impact Distribution",
+      "type": "histogram",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "targets": [
+        {
+          "expr": "swap_price_impact_bucket",
+          "legendFormat": "{{le}}"
+        }
+      ]
+    }
+  ]
+}

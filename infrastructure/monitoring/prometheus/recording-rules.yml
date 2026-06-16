@@ -1,0 +1,30 @@
+groups:
+  - name: soropool_recording_rules
+    interval: 30s
+    rules:
+      - record: job:tvl_usd:sum
+        expr: sum(tvl_usd{pool=~".+"})
+
+      - record: job:volume_24h_usd:sum
+        expr: sum(volume_24h_usd{pool=~".+"})
+
+      - record: job:fee_revenue_24h_usd:sum
+        expr: sum(fee_revenue_24h_usd{pool=~".+"})
+
+      - record: job:pool_count:count
+        expr: count(tvl_usd{pool=~".+"})
+
+      - record: job:swap_volume_5m:rate
+        expr: sum(rate(swap_volume_usd_total[5m]))
+
+      - record: job:swap_count_5m:rate
+        expr: sum(rate(swap_count_total[5m]))
+
+      - record: pool:avg_price_impact:avg
+        expr: avg(swap_price_impact) by (pool)
+
+      - record: pool:liquidity_utilization:ratio
+        expr: |
+          (pool_reserve_0 + pool_reserve_1)
+          /
+          (pool_reserve_0_max + pool_reserve_1_max)

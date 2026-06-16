@@ -1,0 +1,56 @@
+groups:
+  - name: soropool-alerts
+    interval: 30s
+
+    rules:
+      - alert: IndexerLagHigh
+        expr: time() - soroban_last_processed_ledger_time > 300
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Indexer lag is high ({{ $value }}s behind)"
+          description: "The Soroban event indexer has not processed new ledgers for over 5 minutes."
+
+      - alert: ApiErrorRateHigh
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API error rate is {{ $value | humanizePercentage }}"
+          description: "More than 5% of API requests are returning 5xx errors."
+
+      - alert: StaleTWAP
+        expr: time() - pool_last_swap_timestamp > 3600
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pool {{ $labels.pool }} has stale TWAP"
+          description: "No swaps occurred on pool {{ $labels.pool }} in over an hour."
+
+      - alert: TVLDrop
+        expr: (tvl_usd offset 1h) - tvl_usd > (tvl_usd offset 1h) * 0.10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "TVL dropped more than 10% in 1 hour"
+          description: "Protocol TVL dropped from ${{ $value | humanize }} to ${{ $labels.tvl_usd }}"
+
+      - alert: HighDiskUsage
+        expr: disk_usage_percent > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk usage above 85% on {{ $labels.instance }}"
+
+      - alert: WebSocketConnectionsHigh
+        expr: websocket_connections_total > 5000
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "WebSocket connections exceeded 5000"

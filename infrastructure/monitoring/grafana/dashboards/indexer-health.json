@@ -1,0 +1,63 @@
+{
+  "title": "Indexer Health",
+  "uid": "soropool-indexer-health",
+  "schemaVersion": 36,
+  "version": 1,
+  "panels": [
+    {
+      "title": "Last Processed Ledger",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "soroban_last_processed_ledger",
+          "legendFormat": "Ledger"
+        }
+      ]
+    },
+    {
+      "title": "Indexer Lag (seconds)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "targets": [
+        {
+          "expr": "time() - soroban_last_processed_ledger_time",
+          "legendFormat": "Lag"
+        }
+      ]
+    },
+    {
+      "title": "Events Processed / min",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "targets": [
+        {
+          "expr": "rate(soroban_events_processed_total[1m])",
+          "legendFormat": "Events/min"
+        }
+      ]
+    },
+    {
+      "title": "Indexer Errors",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "targets": [
+        {
+          "expr": "rate(soroban_indexer_errors_total[5m])",
+          "legendFormat": "Errors/min"
+        }
+      ]
+    },
+    {
+      "title": "Events by Type",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "targets": [
+        {
+          "expr": "sum by (event_type) (soroban_events_processed_total)",
+          "legendFormat": "{{event_type}}"
+        }
+      ]
+    }
+  ]
+}
