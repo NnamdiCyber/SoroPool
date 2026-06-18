@@ -3,7 +3,7 @@
 extern crate std;
 
 use soroban_sdk::testutils::{Address as _, Ledger, LedgerInfo};
-use soroban_sdk::{Address, Env, IntoVal, Symbol, Val, Vec};
+use soroban_sdk::{Address, Env};
 
 use soropool_pool_factory::{PoolFactory, PoolFactoryClient};
 use soropool_shared::types::PoolType;
@@ -43,12 +43,8 @@ fn test_initialize_sets_admin() {
 
     client.initialize(&admin, &fee_recipient);
 
-    let args: Vec<Val> = (admin.clone(), fee_recipient.clone(), deadline(&env)).into_val(&env);
-    let err = env.try_invoke_contract::<(), soroban_sdk::Error>(
-        &factory,
-        &Symbol::new(&env, "initialize"),
-        args,
-    );
+    // Second initialize must fail
+    let err = client.try_initialize(&admin, &fee_recipient);
     assert!(err.is_err());
 }
 

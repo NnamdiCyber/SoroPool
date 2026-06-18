@@ -218,12 +218,13 @@ describe('StableSwap Math - Parity with Rust contract', () => {
 });
 
 describe('Concentrated Liquidity Math - Parity with Rust contract', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  /* eslint-disable @typescript-eslint/no-var-requires */
   const {
     tickToPrice,
     getAmount0Delta,
     getAmount1Delta,
   } = require('../concentrated.math');
+  /* eslint-enable @typescript-eslint/no-var-requires */
 
   describe('tickToPrice', () => {
     it('should return Q64.96 price for tick 0', () => {
