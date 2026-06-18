@@ -10,11 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          components: clippy
+      - name: Setup Rust
+        run: |
+          rustup toolchain install stable --component clippy
+          rustup target add wasm32-unknown-unknown
       - name: Cache Rust
         uses: actions/cache@v3
         with:
