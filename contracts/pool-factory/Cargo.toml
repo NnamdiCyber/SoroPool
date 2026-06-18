@@ -15,6 +15,7 @@ soropool-concentrated-liquidity-pool = { path = "../concentrated-liquidity-pool"
 
 [features]
 default = []
+testutils = ["soroban-sdk/testutils"]
 test-deploy = [
     "soropool-constant-product-pool",
     "soropool-stableswap-pool",

@@ -14,7 +14,7 @@ fn setup() -> (Env, Address, Address, Address) {
     let admin = Address::generate(&env);
     let minter = Address::generate(&env);
     let user = Address::generate(&env);
-    let lp_token = env.register(LpToken, ());
+    let lp_token = env.register_contract(None, LpToken);
     let client = LpTokenClient::new(&env, &lp_token);
 
     client.initialize(

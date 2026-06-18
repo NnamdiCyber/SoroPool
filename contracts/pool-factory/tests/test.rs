@@ -29,7 +29,7 @@ fn deadline(env: &Env) -> u64 {
 }
 
 fn register_factory(env: &Env) -> Address {
-    env.register(PoolFactory, ())
+    env.register_contract(None, PoolFactory)
 }
 
 #[test]
