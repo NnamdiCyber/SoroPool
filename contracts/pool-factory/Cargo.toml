@@ -18,8 +18,11 @@ default = []
 testutils = ["soroban-sdk/testutils"]
 test-deploy = [
     "soropool-constant-product-pool",
+    "soropool-constant-product-pool/testutils",
     "soropool-stableswap-pool",
+    "soropool-stableswap-pool/testutils",
     "soropool-concentrated-liquidity-pool",
+    "soropool-concentrated-liquidity-pool/testutils",
 ]
 
 [dev-dependencies]
