@@ -31,7 +31,7 @@ jobs:
       - name: Build remaining contracts
         run: cd contracts && cargo build --target wasm32-unknown-unknown --release
       - name: Run contract tests
-        run: cd contracts && cargo test --features testutils -- --nocapture
+        run: cd contracts && cargo test --features testutils,test-deploy -- --nocapture
       - name: Clippy lint
         run: cd contracts && cargo clippy -- -D warnings
       - name: Check contract size
