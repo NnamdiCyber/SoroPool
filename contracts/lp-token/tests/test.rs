@@ -66,6 +66,7 @@ fn test_burn_decreases_balance_and_total_supply() {
 #[test]
 fn test_unauthorized_mint_reverts() {
     let (env, lp_token, _minter, user) = setup();
+    env.set_auths(&[]);  // disable mock_all_auths so auth is enforced
 
     let args: Vec<Val> = (user.clone(), 100i128).into_val(&env);
     let err = env.try_invoke_contract::<(), soroban_sdk::Error>(
