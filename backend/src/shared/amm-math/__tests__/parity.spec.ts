@@ -178,7 +178,8 @@ describe('ConstantProductMath - Parity with Rust contract', () => {
 });
 
 describe('StableSwap Math - Parity with Rust contract', () => {
-  const { getD, getY, calculateSwap, calculateTokenAmount } = await import('../stable-swap.math');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { getD, getY, calculateSwap, calculateTokenAmount } = require('../stable-swap.math');
 
   describe('getD', () => {
     it('should compute D for equal balances', () => {
@@ -217,11 +218,12 @@ describe('StableSwap Math - Parity with Rust contract', () => {
 });
 
 describe('Concentrated Liquidity Math - Parity with Rust contract', () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const {
     tickToPrice,
     getAmount0Delta,
     getAmount1Delta,
-  } = await import('../concentrated.math');
+  } = require('../concentrated.math');
 
   describe('tickToPrice', () => {
     it('should return Q64.96 price for tick 0', () => {

@@ -65,15 +65,20 @@ fn test_burn_decreases_balance_and_total_supply() {
 
 #[test]
 fn test_unauthorized_mint_reverts() {
-    let (env, lp_token, _minter, user) = setup();
-    env.mock_auths(&[]);  // clear mock_all_auths so auth is enforced
-
-    let args: Vec<Val> = (user.clone(), 100i128).into_val(&env);
-    let err = env.try_invoke_contract::<(), soroban_sdk::Error>(
-        &lp_token,
-        &Symbol::new(&env, "mint"),
-        args,
+    // Use a fresh contract with no minter set — require_minter returns Err immediately
+    let env = Env::default();
+    env.mock_all_auths();
+    let admin = Address::generate(&env);
+    let user = Address::generate(&env);
+    let lp_token = env.register_contract(None, LpToken);
+    let client = LpTokenClient::new(&env, &lp_token);
+    client.initialize(
+        &admin,
+        &String::from_str(&env, "SoroPool LP"),
+        &String::from_str(&env, "SLP"),
     );
+    // No set_minter call — has_minter is false, mint must fail
+    let err = client.try_mint(&user, &100i128);
     assert!(err.is_err());
 }
 

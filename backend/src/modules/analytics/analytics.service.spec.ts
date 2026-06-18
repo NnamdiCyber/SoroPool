@@ -62,12 +62,9 @@ describe('TvlService', () => {
   });
 });
 
-// Volume & fee revenue aggregation tests
 import { VolumeService } from './volume.service';
 import { FeeRevenueService } from './fee-revenue.service';
 import { Swap } from '../../database/entities/swap.entity';
-
-import { Pool } from '../../database/entities/pool.entity';
 
 const swapQB = {
   select: jest.fn().mockReturnThis(),
