@@ -61,6 +61,12 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles/styles.scss"],
             "scripts": []
+          },
+          "configurations": {
+            "ci": {
+              "watch": false,
+              "browsers": "ChromeHeadless"
+            }
           }
         },
         "lint": {
