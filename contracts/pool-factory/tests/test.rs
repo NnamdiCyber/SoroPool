@@ -29,7 +29,7 @@ fn deadline(env: &Env) -> u64 {
 }
 
 fn register_factory(env: &Env) -> Address {
-    env.register_contract(None, PoolFactory)
+    env.register(PoolFactory, ())
 }
 
 #[test]
@@ -44,7 +44,7 @@ fn test_initialize_sets_admin() {
     client.initialize(&admin, &fee_recipient);
 
     let args: Vec<Val> = (admin.clone(), fee_recipient.clone(), deadline(&env)).into_val(&env);
-    let err = env.try_invoke_contract::<()>(
+    let err = env.try_invoke_contract::<(), soroban_sdk::Error>(
         &factory,
         &Symbol::new(&env, "initialize"),
         args,

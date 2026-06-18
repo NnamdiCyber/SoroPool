@@ -14,7 +14,7 @@ fn setup() -> (Env, Address, Address, Address) {
     let admin = Address::generate(&env);
     let minter = Address::generate(&env);
     let user = Address::generate(&env);
-    let lp_token = env.register_contract(None, LpToken);
+    let lp_token = env.register(LpToken, ());
     let client = LpTokenClient::new(&env, &lp_token);
 
     client.initialize(
@@ -68,7 +68,7 @@ fn test_unauthorized_mint_reverts() {
     let (env, lp_token, _minter, user) = setup();
 
     let args: Vec<Val> = (user.clone(), 100i128).into_val(&env);
-    let err = env.try_invoke_contract::<()>(
+    let err = env.try_invoke_contract::<(), soroban_sdk::Error>(
         &lp_token,
         &Symbol::new(&env, "mint"),
         args,
