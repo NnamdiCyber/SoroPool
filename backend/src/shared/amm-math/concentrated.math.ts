@@ -211,7 +211,6 @@ export function computeSwapStep(
 
   let sqrtPNext: bigint;
   let amountInUsed: bigint;
-  let amountOut: bigint;
 
   if (amountInAfterFee >= maxAmountIn) {
     sqrtPNext = sqrtPTarget;
@@ -221,7 +220,7 @@ export function computeSwapStep(
     amountInUsed = amountInAfterFee;
   }
 
-  amountOut = zeroForOne
+  const amountOut = zeroForOne
     ? getAmount1Delta(sqrtPNext, sqrtP, liquidity, false)
     : getAmount0Delta(sqrtP, sqrtPNext, liquidity, false);
 

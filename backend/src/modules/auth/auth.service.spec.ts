@@ -57,7 +57,7 @@ describe('AuthService', () => {
   });
 
   it('verifySignature throws on invalid signature', async () => {
-    const StellarSdk = require('stellar-sdk');
+    const StellarSdk = await import('stellar-sdk');
     StellarSdk.Keypair.fromPublicKey.mockReturnValueOnce({
       verify: jest.fn().mockReturnValue(false),
     });
