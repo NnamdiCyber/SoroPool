@@ -33,7 +33,9 @@ jobs:
       - name: Run contract tests
         run: cd contracts && cargo test --features testutils,test-deploy -- --nocapture
       - name: Clippy lint
-        run: cd contracts && cargo clippy -- -D warnings
+        run: |
+          rustup component add clippy
+          cd contracts && cargo clippy -- -D warnings
       - name: Check contract size
         run: |
           for f in contracts/target/wasm32-unknown-unknown/release/*.wasm; do
