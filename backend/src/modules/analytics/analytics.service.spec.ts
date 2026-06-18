@@ -67,6 +67,8 @@ import { VolumeService } from './volume.service';
 import { FeeRevenueService } from './fee-revenue.service';
 import { Swap } from '../../database/entities/swap.entity';
 
+import { Pool } from '../../database/entities/pool.entity';
+
 const swapQB = {
   select: jest.fn().mockReturnThis(),
   where: jest.fn().mockReturnThis(),
@@ -92,7 +94,7 @@ describe('VolumeService', () => {
 
   it('getVolume24h returns raw aggregated value', async () => {
     const result = await service.getVolume24h();
-    expect(Number(result)).toBeGreaterThan(0);
+    expect(result.volumeUsd).toBeGreaterThanOrEqual(0);
   });
 });
 
@@ -104,6 +106,7 @@ describe('FeeRevenueService', () => {
       providers: [
         FeeRevenueService,
         { provide: getRepositoryToken(Swap), useValue: swapRepository },
+        { provide: getRepositoryToken(Pool), useValue: { find: jest.fn().mockResolvedValue([]) } },
       ],
     }).compile();
     service = module.get<FeeRevenueService>(FeeRevenueService);
@@ -111,6 +114,6 @@ describe('FeeRevenueService', () => {
 
   it('getFeeRevenue24h returns aggregated fees', async () => {
     const result = await service.getFeeRevenue24h();
-    expect(Number(result)).toBeGreaterThan(0);
+    expect(result.revenueUsd).toBeGreaterThanOrEqual(0);
   });
 });

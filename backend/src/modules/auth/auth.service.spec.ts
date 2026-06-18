@@ -57,7 +57,7 @@ describe('AuthService', () => {
   });
 
   it('verifySignature throws on invalid signature', async () => {
-    const StellarSdk = await import('stellar-sdk');
+    const StellarSdk = require('stellar-sdk'); // eslint-disable-line @typescript-eslint/no-var-requires
     StellarSdk.Keypair.fromPublicKey.mockReturnValueOnce({
       verify: jest.fn().mockReturnValue(false),
     });

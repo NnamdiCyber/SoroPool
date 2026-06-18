@@ -8,7 +8,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:ci": "ng test --watch=false --include-browser=chrome-headless",
+    "test:ci": "ng test --no-watch",
     "lint": "ng lint",
     "e2e": "cypress run"
   },
