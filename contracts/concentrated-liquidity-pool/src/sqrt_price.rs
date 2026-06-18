@@ -17,19 +17,12 @@ pub fn tick_to_sqrt_price(env: &Env, tick: i32) -> u128 {
 
 /// Approximate tick from sqrt price (binary search).
 pub fn price_to_tick(sqrt_price_x96: u128) -> i32 {
-    // Binary search in [-887272, 887272]
-    let mut lo: i32 = -887272;
-    let mut hi: i32 = 887272;
-    // We don't have Env here so use a simple approximation via log
-    // tick = round(log(price) / log(1.0001))
-    // price = (sqrt_price_x96 / 2^96)^2
     if sqrt_price_x96 == 0 {
-        return lo;
+        return -887272;
     }
-    // Use floating-point approximation (acceptable for scaffolding)
-    let sqrt_f = sqrt_price_x96 as f64 / (2u128.pow(96) as f64);
+    let sqrt_f = sqrt_price_x96 as f64 / 79228162514264337593543950336.0; // 2^96 as f64
     let price = sqrt_f * sqrt_f;
-    let tick_f = price.ln() / (1.0001f64).ln();
+    let tick_f = libm::log(price) / libm::log(1.0001f64);
     tick_f as i32
 }
 

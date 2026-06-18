@@ -14,7 +14,7 @@ soropool-stableswap-pool = { path = "../stableswap-pool", optional = true }
 soropool-concentrated-liquidity-pool = { path = "../concentrated-liquidity-pool", optional = true }
 
 [features]
-default = ["test-deploy"]
+default = []
 test-deploy = [
     "soropool-constant-product-pool",
     "soropool-stableswap-pool",

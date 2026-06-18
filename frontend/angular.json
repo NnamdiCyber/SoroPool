@@ -25,7 +25,7 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
-            "tsConfig": "tsconfig.json",
+            "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets", "src/manifest.webmanifest"],
             "styles": ["src/styles/styles.scss"],
             "scripts": []
@@ -37,8 +37,6 @@
                 { "type": "anyComponentStyle", "maximumWarning": "2kb", "maximumError": "4kb" }
               ],
               "outputHashing": "all",
-              "serviceWorker": "ngsw-config.json"
-            },
             "development": {
               "optimization": false,
               "extractLicenses": false,

@@ -1184,6 +1184,7 @@ dependencies = [
 name = "soropool-concentrated-liquidity-pool"
 version = "0.1.0"
 dependencies = [
+ "libm",
  "soroban-sdk",
  "soropool-shared",
 ]

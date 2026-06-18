@@ -14,7 +14,7 @@ pub fn deploy_constant_product_pool(env: &Env) -> Address {
     let salt = storage::pool_salt(env);
     env.deployer()
         .with_current_contract(salt)
-        .deploy_v2(wasm_hash, ())
+        .deploy(wasm_hash)
 }
 
 #[cfg(feature = "test-deploy")]
@@ -29,7 +29,7 @@ pub fn deploy_stable_pool(env: &Env) -> Address {
     let salt = storage::pool_salt(env);
     env.deployer()
         .with_current_contract(salt)
-        .deploy_v2(wasm_hash, ())
+        .deploy(wasm_hash)
 }
 
 #[cfg(feature = "test-deploy")]
@@ -44,7 +44,7 @@ pub fn deploy_concentrated_pool(env: &Env) -> Address {
     let salt = storage::pool_salt(env);
     env.deployer()
         .with_current_contract(salt)
-        .deploy_v2(wasm_hash, ())
+        .deploy(wasm_hash)
 }
 
 #[cfg(not(feature = "test-deploy"))]
