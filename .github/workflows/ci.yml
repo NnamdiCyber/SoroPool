@@ -21,7 +21,14 @@ jobs:
             ~/.cargo
             contracts/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('contracts/**/Cargo.toml') }}
-      - name: Build contracts
+      - name: Build pool contracts
+        run: |
+          cd contracts
+          cargo build --target wasm32-unknown-unknown --release \
+            -p soropool-constant-product-pool \
+            -p soropool-stableswap-pool \
+            -p soropool-concentrated-liquidity-pool
+      - name: Build remaining contracts
         run: cd contracts && cargo build --target wasm32-unknown-unknown --release
       - name: Run contract tests
         run: cd contracts && cargo test -- --nocapture
@@ -50,7 +57,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
       - run: cd backend && npm ci
@@ -64,7 +71,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
       - run: cd frontend && npm ci
@@ -77,4 +84,9 @@ jobs:
     name: Verify TS ↔ Rust AMM math parity
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
       - run: cd backend && npm ci && npm run test:amm-parity
