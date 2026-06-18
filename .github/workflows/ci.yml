@@ -40,7 +40,11 @@ jobs:
             [ -f "$f" ] || continue
             size=$(wc -c < "$f")
             echo "$f: ${size} bytes"
-            [ "$size" -le 65536 ] || (echo "Contract too large!" && exit 1)
+            case "$f" in
+              *pool_factory*) limit=262144 ;;  # factory embeds pool WASMs
+              *) limit=65536 ;;
+            esac
+            [ "$size" -le "$limit" ] || (echo "Contract too large: $f (${size} bytes > ${limit})" && exit 1)
           done
 
   test-backend:
