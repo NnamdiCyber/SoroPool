@@ -37,6 +37,7 @@ jobs:
       - name: Check contract size
         run: |
           for f in contracts/target/wasm32-unknown-unknown/release/*.wasm; do
+            [ -f "$f" ] || continue
             size=$(wc -c < "$f")
             echo "$f: ${size} bytes"
             [ "$size" -le 65536 ] || (echo "Contract too large!" && exit 1)
